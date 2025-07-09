@@ -2,7 +2,7 @@ name: Daily Reddit Image Bot
 
 on:
   schedule:
-    - cron: '0 3 * * *'  # Runs every day at 3 AM UTC
+    - cron: '0 */6 * * *'  # Runs every day at 4 times in a day
   workflow_dispatch:
 
 jobs:

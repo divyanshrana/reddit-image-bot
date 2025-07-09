@@ -1,4 +1,5 @@
 import os
+import random
 from diffusers import StableDiffusionPipeline
 import torch
 import praw
@@ -37,13 +38,29 @@ def post_to_reddit(image_path, subreddit_name="radwalls", title="Here’s today�
     print(f"✅ Posted! https://www.reddit.com{submission.permalink}")
 
 def main():
-    prompt = (
-        "Create a grainy, vintage black-and-white poster with a worn, textured background. "
-        "Add Japanese kanji at the top and any nihilistic English words "
-        "below. Include delicate white cherry blossom branches rising from the bottom, detailed and "
-        "subtle. Use an old typewriter or film title font. The mood should feel dark, poetic, and cinematic."
+    # --- Static parts
+    base_prompt = (
+       "A vibrant, gradient red-to-black wallpaper poster with a smooth, cinematic texture. "
+        "A subtle 'aura' text at the bottom in elegant white font, evoking a dark, poetic mood. "
     )
 
+    # --- Dynamic piece
+    nihilistic_words = [
+        "Nothing Matters",
+        "Void Inside",
+        "Existence is Pain",
+        "Fade Away",
+        "Lost Dreams",
+        "Oblivion",
+        "Silent Despair",
+        "Ashes to Ashes",
+    ]
+
+    # Pick one for this run
+    chosen_word = random.choice(nihilistic_words)
+
+    # --- Final prompt
+    prompt = f"{base_prompt} Add the English phrase '{chosen_word}' near the bottom in a striking white font in a minimal way"
     image_file = generate_image(prompt)
     post_to_reddit(image_file)
 

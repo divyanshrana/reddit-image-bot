@@ -1,3 +1,4 @@
+import os
 from diffusers import StableDiffusionPipeline
 import torch
 import praw
@@ -24,11 +25,11 @@ def generate_image(prompt, model_id="stabilityai/stable-diffusion-2-1", output_f
 
 def post_to_reddit(image_path, subreddit_name="radwalls", title="Here’s today’s AI art! #StableDiffusion"):
     reddit = praw.Reddit(
-        client_id="7TcT5ku29tHWnBMTWmEGgQ",
-        client_secret="JAhfyLPguelbsicnuKX-zIeaAcQnXQ",
-        username="Competitive-Fee2930",
-        password="Ribco@0909",
-        user_agent="DailyImageBot/0.1 by Competitive-Fee2930"
+        client_id=os.getenv("REDDIT_CLIENT_ID"),
+        client_secret=os.getenv("REDDIT_CLIENT_SECRET"),
+        username=os.getenv("REDDIT_USERNAME"),
+        password=os.getenv("REDDIT_PASSWORD"),
+        user_agent="script:DailyImageBot:1.0 (by /u/Competitive-Fee2930)"
     )
 
     subreddit = reddit.subreddit(subreddit_name)

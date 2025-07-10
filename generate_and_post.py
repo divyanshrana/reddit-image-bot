@@ -39,7 +39,7 @@ def generate_image(
     return output_file
 
 
-def post_to_reddit(image_path, subreddit_name="pinexwalls", title="Some wallpaper"):
+def post_to_reddit(image_path, subreddit_name="pexwalls", title="Some wallpaper"):
     reddit = praw.Reddit(
         client_id=os.getenv("REDDIT_CLIENT_ID"),
         client_secret=os.getenv("REDDIT_CLIENT_SECRET"),

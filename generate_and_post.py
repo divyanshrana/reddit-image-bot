@@ -1,6 +1,6 @@
 import os
 import random
-from diffusers import StableDiffusionXLPipeline  # ✅ Use SDXL pipeline!
+from diffusers import StableDiffusionPipeline  # ✅ SD 2.1 uses the standard pipeline
 import torch
 import praw
 from dotenv import load_dotenv
@@ -10,27 +10,24 @@ load_dotenv()
 
 def generate_image(
     prompt,
-    model_id="stabilityai/stable-diffusion-xl-base-1.0",
+    model_id="stabilityai/stable-diffusion-2-1",
     output_file="daily_generated_image.png"
 ):
-    # Use float16 on GPU if available, else CPU fallback
     dtype = torch.float16 if torch.cuda.is_available() else torch.float32
 
-    # ✅ Use SDXL pipeline
-    pipe = StableDiffusionXLPipeline.from_pretrained(model_id, torch_dtype=dtype)
+    pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=dtype)
     pipe = pipe.to("cuda") if torch.cuda.is_available() else pipe.to("cpu")
 
     negative_prompt = (
         "blurry, low quality, frame, border, vignette, white margin"
     )
 
-    # Generate phone wallpaper at 1080p-ish ratio
     image = pipe(
         prompt=prompt,
         negative_prompt=negative_prompt,
-        height=1920,   # typical phone height
-        width=1080,    # typical phone width
-        num_inference_steps=30,  # adjust as needed for quality vs speed
+        height=1920,
+        width=1080,
+        num_inference_steps=30,
         guidance_scale=8.5
     ).images[0]
 
@@ -52,6 +49,7 @@ def post_to_reddit(image_path, subreddit_name="pexwalls", title="Some wallpaper"
     submission = subreddit.submit_image(title, image_path)
     print(f"✅ Posted! https://www.reddit.com{submission.permalink}")
 
+
 def get_dynamic_title():
     main_titles = [
         "Nothing.", "Void.", "Fading.", "Oblivion.", "Silent.",
@@ -68,6 +66,7 @@ def get_dynamic_title():
     chosen_sub = random.choice(sub_titles)
     combined_title = f"{chosen_main} {chosen_sub}."
     return combined_title
+
 
 def main():
     wallpaper_prompts = [
@@ -87,9 +86,9 @@ def main():
 
     image_file = generate_image(prompt + " ultra fine")
 
-    # Dynamic minimal title
     title = get_dynamic_title()
     post_to_reddit(image_file, title=title)
+
 
 if __name__ == "__main__":
     main()
